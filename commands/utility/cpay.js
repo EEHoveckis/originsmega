@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const addPayment = require("../../helperFunctions/addPayment.js");
+const getOrderId = require("../../helperFunctions/getOrderId.js");
 const fetchUUID = require("../../helperFunctions/fetchUUID.js");
 
 module.exports = {
@@ -31,12 +32,16 @@ module.exports = {
 
 		const totalPay = workerPay + operationsPay;
 
+		const newId = await getOrderId(database);
 		const sourcerUUID = await fetchUUID(sourcer);
-		job = {
+
+		const job = {
+			jobId: newId,
 			jobDesc: jobDesc,
 			payment: workerPay
 		};
 		const operationsJob = {
+			jobId: newId,
 			jobDesc: jobDesc,
 			payment: operationsPay
 		};
@@ -45,7 +50,7 @@ module.exports = {
 
 		const sourceEmbed = new EmbedBuilder()
 			.setColor("#7b11bd")
-			.setTitle(`Sourcer: ${sourcer}`)
+			.setTitle(`${sourcer} | ${newId}`)
 			.addFields({ name: "JOB DESCRIPTION:", value: `${jobDesc}` })
 			.addFields({ name: "WORKER PAY:", value: `${workerPay}<:ruby:1365502815807602808>`, inline: true }, { name: "OPPERATIONS PAY:", value: `${operationsPay}<:ruby:1365502815807602808>`, inline: true })
 			.addFields({ name: "TOTAL PAYMENT:", value: `${totalPay}<:ruby:1365502815807602808>` })

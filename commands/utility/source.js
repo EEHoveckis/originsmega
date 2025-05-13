@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const addPayment = require("../../helperFunctions/addPayment.js");
+const getOrderId = require("../../helperFunctions/getOrderId.js");
 const pricelist = require("../../pricelist.json");
 const fetchUUID = require("../../helperFunctions/fetchUUID.js");
 
@@ -30,7 +31,6 @@ module.exports = {
 		if (materialInfo == undefined) {
 			const errorEmbed = new EmbedBuilder()
 				.setColor("#c21717")
-				.setTitle("ERROR")
 				.setDescription(`Block **${material}** not found!`);
 
 			await interaction.reply({ embeds: [errorEmbed] });
@@ -39,12 +39,16 @@ module.exports = {
 			const operationsPay = Math.round(materialInfo.newstackpr * amount * 27 * 0.15);
 			const totalPay = sourcerPay + operationsPay;
 
+			const newId = await getOrderId(database);
 			const sourcerUUID = await fetchUUID(sourcer);
+
 			const job = {
+				jobId: newId,
 				jobDesc: `<:shulker:1365223044800446546> x${amount} ${materialInfo.blockname}`,
 				payment: sourcerPay
 			};
 			const operationsJob = {
+				jobId: newId,
 				jobDesc: `<:shulker:1365223044800446546> x${amount} ${materialInfo.blockname}`,
 				payment: operationsPay
 			};
@@ -53,7 +57,7 @@ module.exports = {
 
 			const sourceEmbed = new EmbedBuilder()
 				.setColor("#7b11bd")
-				.setTitle(`Sourcer: ${sourcer}`)
+				.setTitle(`${sourcer} | ${newId}`)
 				.addFields({ name: "MATERIAL:", value: `<:shulker:1365223044800446546> x${amount} ${materialInfo.blockname}` })
 				.addFields({ name: "SOURCER PAY:", value: `${sourcerPay}<:ruby:1365502815807602808>`, inline: true }, { name: "OPPERATIONS PAY:", value: `${operationsPay}<:ruby:1365502815807602808>`, inline: true })
 				.addFields({ name: "TOTAL PAYMENT:", value: `${totalPay}<:ruby:1365502815807602808>` })
