@@ -26,6 +26,7 @@ jobs:
 
       - name: Stop existing bot if running
         run: pm2 delete originsmega || true
+        shell: bash
 
       - name: Start originsmega bot with PM2
         run: pm2 start index.js --name "originsmega"
