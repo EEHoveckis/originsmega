@@ -1,11 +1,10 @@
 const connectMongo = require("./helperFunctions/connectMongo.js");
 const loadCommands = require("./helperFunctions/loadCommands.js");
-const { Client, Events, GatewayIntentBits } = require("discord.js")
-const { token } = require("./config.json");
+const { Client, Events, GatewayIntentBits } = require("discord.js");
 
 (async function() {
 	const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent] });
-	client.login(token);
+	client.login(process.env.DISCORD_TOKEN);
 
 	const mongoClient = await connectMongo();
 	const { database } = require("./helperFunctions/connectMongo.js");

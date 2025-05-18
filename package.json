@@ -1,28 +1,28 @@
 {
-  "name": "originsmega",
-  "version": "1.0.0",
-  "description": "Small discord bot for minecraft server Origin Realms. Runs on discord.js v14",
-  "homepage": "https://github.com/EEHoveckis/originsmega#readme",
-  "bugs": {
-    "url": "https://github.com/EEHoveckis/originsmega/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EEHoveckis/originsmega.git"
-  },
-  "license": "MIT",
-  "author": "EEHoveckis (Edgars Eduards Hoveckis)",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "discord.js": "^14.19.3",
-    "mongodb": "^6.16.0",
-    "node-fetch": "^2.7.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+	"name": "originsmega",
+	"version": "1.0.7",
+	"description": "Small discord bot for minecraft server Origin Realms. Runs on discord.js v14",
+	"homepage": "https://github.com/EEHoveckis/originsmega#readme",
+	"bugs": {
+		"url": "https://github.com/EEHoveckis/originsmega/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/EEHoveckis/originsmega.git"
+	},
+	"license": "MIT",
+	"author": "EEHoveckis (Edgars Eduards Hoveckis)",
+	"type": "commonjs",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"discord.js": "^14.19.3",
+		"mongodb": "^6.16.0",
+		"node-fetch": "^2.7.0"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.10"
+	}
 }
