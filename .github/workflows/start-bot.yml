@@ -24,9 +24,19 @@ jobs:
       - name: Install PM2 globally
         run: npm install -g pm2
 
-      - name: Stop existing bot if running
+      - name: Delete PM2 process on Linux
+        if: runner.os == 'Linux'
         run: pm2 delete originsmega || true
-        shell: bash
+
+      - name: Delete PM2 process on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          try {
+            pm2 delete originsmega
+          } catch {
+            Write-Host "Failed to delete PM2 process (maybe not running)"
+          }
 
       - name: Start originsmega bot with PM2
         run: pm2 start index.js --name "originsmega"

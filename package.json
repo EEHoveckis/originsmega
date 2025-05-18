@@ -1,6 +1,6 @@
 {
 	"name": "originsmega",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"description": "Small discord bot for minecraft server Origin Realms. Runs on discord.js v14",
 	"homepage": "https://github.com/EEHoveckis/originsmega#readme",
 	"bugs": {
