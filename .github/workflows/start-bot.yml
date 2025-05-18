@@ -30,7 +30,7 @@ jobs:
 
       - name: Delete PM2 process on Windows
         if: runner.os == 'Windows'
-        shell: pwsh
+        shell: powershell
         run: |
           try {
             pm2 delete originsmega
