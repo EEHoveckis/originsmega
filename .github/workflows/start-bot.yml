@@ -32,14 +32,20 @@ jobs:
         if: runner.os == 'Windows'
         shell: powershell
         run: |
-          try {
+          $processExists = pm2 list | Select-String -Pattern "originsmega"
+
+          if ($processExists) {
+            Write-Host "Deleting existing PM2 process 'originsmega'..."
             pm2 delete originsmega
-          } catch {
-            Write-Host "Failed to delete PM2 process (maybe not running)"
+          } else {
+            Write-Host "PM2 process 'originsmega' not found, skipping delete."
           }
 
-      - name: Start originsmega bot with PM2
-        run: pm2 start index.js --name "originsmega"
+          Write-Host "Starting 'originsmega' process..."
+          pm2 start index.js --name "originsmega"
+
+          Write-Host "Saving PM2 process list..."
+          pm2 save
         env:
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
