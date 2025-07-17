@@ -63,7 +63,7 @@ module.exports = {
 				.addFields({ name: "WORKER PAY:", value: `${workerPay}<:ruby:1365502815807602808>` })
 				.setThumbnail(`https://api.mineatar.io/face/${workerUUID}?scale=32`)
 				.setTimestamp()
-				.setFooter({ text: `Requested by ${interaction.member.user.username}`, iconURL: interaction.member.user.avatarURL() });
+				.setFooter({ text: `Submitted by ${interaction.member.user.username}`, iconURL: interaction.member.user.avatarURL() });
 
 			await interaction.reply({ embeds: [sourceEmbed] });
 		}
