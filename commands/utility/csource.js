@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const addPayment = require("../../helperFunctions/addPayment.js");
-const getOrderId = require("../../helperFunctions/getOrderId.js");
+const addPayment = require("../../helperFunctions/addPayment.js").workPayment;
+const getId = require("../../helperFunctions/getId.js").paymentId;
 const pricelist = require("../../pricelist.json");
 const fetchUUID = require("../../helperFunctions/fetchUUID.js");
 
@@ -20,14 +20,22 @@ module.exports = {
 			option.setName("payment")
 			.setDescription("Custom Payment In Rubies")
 			.setRequired(true))
-		.addStringOption(option =>
-			option.setName("sourcer")
-			.setDescription("IGN of Sourcer")
+		.addMentionableOption(option =>
+			option.setName("worker")
+			.setDescription("IGN of Worker")
 			.setRequired(true)),
 
 	async execute(interaction, database) {
+		if (!interaction.member.roles.cache.has("1395130837665583288")) {
+			const errorEmbed = new EmbedBuilder()
+				.setColor("#c21717")
+				.setDescription("You lack permissions to run this command!");
 
-		const sourcer = interaction.options.getString("sourcer");
+			await interaction.reply({ embeds: [errorEmbed] });
+			return;
+		}
+
+		const worker = interaction.options.getMentionable("worker").nickname;
 		const material = interaction.options.getString("material");
 		const amount = interaction.options.getInteger("amount");
 		const payment = interaction.options.getInteger("payment");
@@ -40,32 +48,23 @@ module.exports = {
 
 			await interaction.reply({ embeds: [errorEmbed] });
 		} else {
-			const operationsPay = Math.round(materialInfo.newstackpr * amount * 27 * 0.15);
-			const totalPay = payment + operationsPay;
-
-			const newId = await getOrderId(database);
-			const sourcerUUID = await fetchUUID(sourcer);
+			const newId = await getId(database);
+			const workerUUID = await fetchUUID(worker);
 
 			const job = {
 				jobId: newId,
 				jobDesc: `<:shulker:1365223044800446546> x${amount} ${materialInfo.blockname}`,
 				payment: payment
 			};
-			const operationsJob = {
-				jobId: newId,
-				jobDesc: `<:shulker:1365223044800446546> x${amount} ${materialInfo.blockname}`,
-				payment: operationsPay
-			};
 
-			await addPayment(database, sourcer, job, operationsJob);
+			await addPayment(database, worker, job);
 
 			const sourceEmbed = new EmbedBuilder()
 				.setColor("#7b11bd")
-				.setTitle(`${sourcer} | ${newId}`)
+				.setTitle(`${worker} | ${newId}`)
 				.addFields({ name: "MATERIAL:", value: `<:shulker:1365223044800446546> x${amount} ${materialInfo.blockname}` })
-				.addFields({ name: "SOURCER PAY:", value: `${payment}<:ruby:1365502815807602808>`, inline: true }, { name: "OPPERATIONS PAY:", value: `${operationsPay}<:ruby:1365502815807602808>`, inline: true })
-				.addFields({ name: "TOTAL PAYMENT:", value: `${totalPay}<:ruby:1365502815807602808>` })
-				.setThumbnail(`https://api.mineatar.io/face/${sourcerUUID}?scale=32`)
+				.addFields({ name: "WORKER PAY:", value: `${payment}<:ruby:1365502815807602808>` })
+				.setThumbnail(`https://api.mineatar.io/face/${workerUUID}?scale=32`)
 				.setTimestamp()
 				.setFooter({ text: `Requested by ${interaction.member.user.username}`, iconURL: interaction.member.user.avatarURL() });
 

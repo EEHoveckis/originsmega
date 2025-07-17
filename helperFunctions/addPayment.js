@@ -1,10 +1,9 @@
-module.exports = async function(database, sourcer, job, operationsJob) {
+module.exports.workPayment = async function(database, worker, job) {
 	await database.collection("payments")
-		.updateOne({ sourcer: sourcer }, { $push: { jobs: job } }, { upsert: true });
-	if (operationsJob.payment != 0) {
-		await database.collection("payments")
-			.updateOne({ sourcer: process.env.OPER_IGN }, { $push: { jobs: operationsJob } }, { upsert: true });
-	} else {
-		return;
-	}
+		.updateOne({ worker: worker }, { $push: { jobs: job } }, { upsert: true });
+};
+
+module.exports.orderPayment = async function(database, date, order) {
+	await database.collection("orders")
+		.updateOne({ date: date }, { $push: { orders: order } }, { upsert: true });
 };

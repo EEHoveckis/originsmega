@@ -5,18 +5,27 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("payments")
 		.setDescription("Retrieve info on payments.")
-		.addStringOption(option =>
-			option.setName("sourcer")
-			.setDescription("IGN of Sourcer")
+		.addMentionableOption(option =>
+			option.setName("worker")
+			.setDescription("IGN of Worker")
 			.setRequired(true)),
 	async execute(interaction, database) {
-		const sourcer = interaction.options.getString("sourcer");
+		const worker = interaction.options.getMentionable("worker").nickname;
 
-		const userData = await database.collection("payments").findOne({ sourcer: sourcer });
+		if (!interaction.member.roles.cache.has("1395130837665583288") && worker != interaction.member.nickname) {
+			const errorEmbed = new EmbedBuilder()
+				.setColor("#c21717")
+				.setDescription("You lack permissions to view other users payments!");
+
+			await interaction.reply({ embeds: [errorEmbed] });
+			return;
+		}
+
+		const userData = await database.collection("payments").findOne({ worker: worker });
 		if (userData == null) {
 			const errorEmbed = new EmbedBuilder()
 				.setColor("#c21717")
-				.setDescription(`Data for **${sourcer}** not found!`);
+				.setDescription(`Data for **${worker}** not found!`);
 
 			await interaction.reply({ embeds: [errorEmbed] });
 		} else {
@@ -26,7 +35,7 @@ module.exports = {
 			if (userData.jobs.length == 0) {
 				const errorEmbed = new EmbedBuilder()
 					.setColor("#c21717")
-					.setDescription(`Data for **${sourcer}** not found!`);
+					.setDescription(`Data for **${worker}** not found!`);
 
 				await interaction.reply({ embeds: [errorEmbed] });
 			} else {
@@ -35,14 +44,14 @@ module.exports = {
 					totalPay += userData.jobs[i].payment;
 				}
 
-				const sourcerUUID = await fetchUUID(sourcer);
+				const workerUUID = await fetchUUID(worker);
 
 				const paymentsEmbed = new EmbedBuilder()
 					.setColor("#7b11bd")
-					.setTitle(`Sourcer: ${sourcer}`)
+					.setTitle(`PAYMENTS: ${worker}`)
 					.setDescription(paymentsData)
 					.addFields({ name: "TOTAL EARNINGS:", value: `${totalPay}<:ruby:1365502815807602808>` })
-					.setThumbnail(`https://api.mineatar.io/face/${sourcerUUID}?scale=32`)
+					.setThumbnail(`https://api.mineatar.io/face/${workerUUID}?scale=32`)
 					.setTimestamp()
 					.setFooter({ text: `Requested by ${interaction.member.user.username}`, iconURL: interaction.member.user.avatarURL() });
 
