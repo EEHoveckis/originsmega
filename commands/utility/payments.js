@@ -5,12 +5,17 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("payments")
 		.setDescription("Retrieve info on payments.")
-		.addMentionableOption(option =>
+		.addStringOption(option =>
 			option.setName("worker")
 			.setDescription("IGN of Worker")
 			.setRequired(true)),
 	async execute(interaction, database) {
-		const worker = interaction.options.getMentionable("worker").nickname;
+		let worker = interaction.options.getString("worker");
+		if (worker.startsWith("<@")) {
+			worker = worker.replace(/<@|>/gm, "");
+			worker = await interaction.guild.members.fetch(worker);
+			worker = worker.nickname;
+		}
 
 		if (!interaction.member.roles.cache.has("1395130837665583288") && worker != interaction.member.nickname) {
 			const errorEmbed = new EmbedBuilder()

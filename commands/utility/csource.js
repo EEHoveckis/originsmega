@@ -20,7 +20,7 @@ module.exports = {
 			option.setName("payment")
 			.setDescription("Custom Payment In Rubies")
 			.setRequired(true))
-		.addMentionableOption(option =>
+		.addStringOption(option =>
 			option.setName("worker")
 			.setDescription("IGN of Worker")
 			.setRequired(true)),
@@ -35,10 +35,15 @@ module.exports = {
 			return;
 		}
 
-		const worker = interaction.options.getMentionable("worker").nickname;
 		const material = interaction.options.getString("material");
 		const amount = interaction.options.getInteger("amount");
 		const payment = interaction.options.getInteger("payment");
+		let worker = interaction.options.getString("worker");
+		if (worker.startsWith("<@")) {
+			worker = worker.replace(/<@|>/gm, "");
+			worker = await interaction.guild.members.fetch(worker);
+			worker = worker.nickname;
+		}
 
 		const materialInfo = pricelist.find(item => item.id === material);
 		if (materialInfo == undefined) {

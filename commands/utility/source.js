@@ -16,9 +16,9 @@ module.exports = {
 			option.setName("amount")
 			.setDescription("Amount Of Shulkers Gathered")
 			.setRequired(true))
-		.addMentionableOption(option =>
+		.addStringOption(option =>
 			option.setName("worker")
-			.setDescription("Worker Name")
+			.setDescription("IGN of Worker")
 			.setRequired(true)),
 
 	async execute(interaction, database) {

@@ -5,7 +5,7 @@ const fetchUUID = require("../../helperFunctions/fetchUUID.js");
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("cpay")
+		.setName("pay")
 		.setDescription("Command for custom payment request.")
 		.addStringOption(option =>
 			option.setName("job")
@@ -15,7 +15,7 @@ module.exports = {
 			option.setName("workerpay")
 			.setDescription("Payment To Worker In Rubies")
 			.setRequired(true))
-		.addMentionableOption(option =>
+		.addStringOption(option =>
 			option.setName("worker")
 			.setDescription("IGN of Worker")
 			.setRequired(true)),
@@ -30,9 +30,14 @@ module.exports = {
 			return;
 		}
 
-		const worker = interaction.options.getMentionable("worker").nickname;
 		const jobDesc = interaction.options.getString("job");
 		const workerPay = interaction.options.getInteger("workerpay");
+		let worker = interaction.options.getString("worker");
+		if (worker.startsWith("<@")) {
+			worker = worker.replace(/<@|>/gm, "");
+			worker = await interaction.guild.members.fetch(worker);
+			worker = worker.nickname;
+		}
 
 		const newId = await getId(database);
 		const workerUUID = await fetchUUID(worker);
