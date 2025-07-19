@@ -31,9 +31,14 @@ module.exports = {
 			return;
 		}
 
-		const worker = interaction.options.getMentionable("worker").nickname;
 		const material = interaction.options.getString("material");
 		const amount = interaction.options.getInteger("amount");
+		let worker = interaction.options.getString("worker");
+		if (worker.startsWith("<@")) {
+			worker = worker.replace(/<@|>/gm, "");
+			worker = await interaction.guild.members.fetch(worker);
+			worker = worker.nickname;
+		}
 
 		const materialInfo = pricelist.find(item => item.id === material);
 		if (materialInfo == undefined) {
