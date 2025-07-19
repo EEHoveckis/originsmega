@@ -60,7 +60,11 @@ module.exports = {
 					.setTimestamp()
 					.setFooter({ text: `Requested by ${interaction.member.user.username}`, iconURL: interaction.member.user.avatarURL() });
 
-				await interaction.reply({ embeds: [paymentsEmbed] });
+				await interaction.reply({ embeds: [paymentsEmbed] }).then(reply => {
+					setTimeout(() => {
+						reply.delete();
+					}, 30000);
+				});
 			}
 		}
 	},
